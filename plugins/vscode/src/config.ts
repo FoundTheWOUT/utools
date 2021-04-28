@@ -8,7 +8,10 @@ switch (platform) {
     defaultShell = "";
     break;
   case "darwin":
-    defaultShell = "zsh -l -c";
+    defaultShell = `osascript -e 'tell application "iTerm"
+    create window with default profile
+      tell current session of current window to write text "code --folder-uri path && exit"
+    end tell'`;
     break;
 }
 

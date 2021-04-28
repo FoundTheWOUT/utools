@@ -1,5 +1,5 @@
 import { Plugin, ListItem, Setting } from "utools-helper";
-import { basename } from "path";
+import { basename, join } from "path";
 import { readFileSync } from "fs";
 import { execSync } from "child_process";
 
@@ -60,8 +60,13 @@ export class VSCode implements Plugin {
 
     let cmd = `${code} --folder-uri "${item.description}"`;
     let shell = Setting.Get("shell");
-    if (shell.trim()) {
-      cmd = shell + ` "${cmd}"`;
+    
+    if(utools.isMacOs()){ 
+      // let path = item.description.replace(/file:\/\//g, '');
+      // utools.showNotification(path);
+      cmd = shell.replace(/path/g, item.description);
+    } else {
+      if (shell.trim()) cmd = shell + ` "${cmd}"`;
     }
     let res = execSync(cmd, { timeout: 3000 }).toString().trim().toLowerCase();
     if (res !== "" && !res.toLowerCase().includes("timeout")) throw res.toString();
